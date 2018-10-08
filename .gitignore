@@ -1,0 +1,4 @@
+sys
+ui/*
+!ui/mainwindow.ui
+!ui/mainwindow.py
