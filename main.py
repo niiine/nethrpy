@@ -7,11 +7,16 @@ from ui.mainwindow import Ui_MainWindow
 
 app = QtWidgets.QApplication(sys.argv)
 
-window = QtWidgets.QMainWindow()
-window.setWindowTitle("nethr")
+class MainWindow(QtWidgets.QMainWindow):
+    def __init__(self, parent=None):
+        super().__init__(parent)
 
-ui_window = Ui_MainWindow()
-ui_window.setupUi(window)
+        self.ui = Ui_MainWindow()
+        self.ui.setupUi(self)
+
+        self.setWindowTitle("nethr")
+
+window = MainWindow()
 
 window.show()
 
