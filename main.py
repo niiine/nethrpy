@@ -18,9 +18,6 @@ class MainWindow(QtWidgets.QMainWindow):
 
 
 
-        #init urlaub_count which is the counter for which array needs to be shown/hidden
-        global urlaub_count
-        urlaub_count = 0
 
         #init urlaub_array
         global urlaub_array
@@ -82,25 +79,44 @@ class MainWindow(QtWidgets.QMainWindow):
 
 
     def set_help_text(self):
-        self.ui.text_dialog.setText("Sonderzeiten = alles, was von der Netto - Arbeitszeit abgezogen werden muss. (Krankheit/Meeting etc)\nFeiertage müssen nicht beachtet - werden, da sie automatisch berechnet werden.\n(Momentan nur RLP Feiertage, Option für andere - Bundesländer wird irgendwann hinzugefügt.")
+        self.ui.text_dialog.setText("Sonderzeiten = alles, was von der Netto - Arbeitszeit abgezogen werden muss. (Krankheit/Meeting etc)\nFeiertage sind nicht zu beachten, da sie automatisiert eingerechnet werden.\n(Momentan nur RLP Feiertage, Option für andere Bundesländer wird irgendwann hinzugefügt.")
 
     def set_about_text(self):
         self.ui.text_dialog.setText("Kontaktemail: nine.github@gmail.com\nKontaktwebsite: https://github.com/strahlii\nSourcecode: https://github.com/strahlii/nethrpy")
 
+    #asks which_urlaub_to_show(), then shows the 4 urlaub-widgets via the array urlaub_array
     def show_urlaub(self):
-        global urlaub_count
-        global urlaub_array
-        for e in urlaub_array[urlaub_count]:
-            e.show()
-        urlaub_count +=1
+        i = self.which_urlaub_to_show()
+        if i is not None:
+            global urlaub_array
+            for e in urlaub_array[i]:
+                e.show()
 
+    #see show_urlaub()
     def hide_urlaub(self):
-        global urlaub_count
-        global urlaub_array
-        for e in urlaub_array[urlaub_count]:
-            e.hide()
-        urlaub_count -=1
+        i = self.which_urlaub_to_hide()
+        if i is not None:
+            global urlaub_array
+            for e in urlaub_array[i]:
+                e.hide()
 
+    #from 0 to 8 asks urlaub_array widget if its hidden, if yes, return the first one (lowest index)
+    def which_urlaub_to_show(self):
+        global urlaub_array
+        for i in range(8):
+            if urlaub_array[i][0].isHidden():
+                return i
+        return None
+
+    #from 8 to 0 asks urlaub_array widget if its shown, if yes, return the last one (highes index)
+    def which_urlaub_to_hide(self):
+        global urlaub_array
+        for i in reversed(range(8)):
+            if urlaub_array[i][0].isHidden() == False:
+                return i
+        return None
+
+    #hides every widget in urlaub_array
     def init_hide_urlaub(self):
         global urlaub_array
         for i in urlaub_array:
