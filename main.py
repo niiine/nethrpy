@@ -67,22 +67,28 @@ class MainWindow(QtWidgets.QMainWindow):
         self.init_hide_urlaub()
 
 
-        #help button
+        #help button functionality
         self.ui.button_help.clicked.connect(self.set_help_text)
 
-        #about button
+        #about button functionality
         self.ui.button_about.clicked.connect(self.set_about_text)
 
+        #was_ist_sonderzeit button functionality
+        self.ui.button_was_ist_sonderzeit.clicked.connect(self.set_sonderzeit_text)
 
+        #show urlaub and hide urlaub buttons functionality
         self.ui.button_urlaub_hinzufuegen.clicked.connect(self.show_urlaub)
         self.ui.button_urlaub_entfernen.clicked.connect(self.hide_urlaub)
 
 
     def set_help_text(self):
-        self.ui.text_dialog.setText("Sonderzeiten = alles, was von der Netto - Arbeitszeit abgezogen werden muss. (Krankheit/Meeting etc)\nFeiertage sind nicht zu beachten, da sie automatisiert eingerechnet werden.\n(Momentan nur RLP Feiertage, Option für andere Bundesländer wird irgendwann hinzugefügt.")
+        self.ui.text_dialog.setText("Kontakt via About-Button\nFeiertage sind nicht zu beachten, da sie automatisiert eingerechnet werden.\n(Momentan nur RLP Feiertage, Option für andere Bundesländer wird irgendwann hinzugefügt.")
 
     def set_about_text(self):
         self.ui.text_dialog.setText("Kontaktemail: nine.github@gmail.com\nKontaktwebsite: https://github.com/strahlii\nSourcecode: https://github.com/strahlii/nethrpy")
+
+    def set_sonderzeit_text(self):
+        self.ui.text_dialog.setText("Sonderzeiten = alles, was von der Netto-Arbeitszeit abgezogen werden muss (Meeting etc)\nFalls nötig kann hier auch die Krankheitszeit in Stunden angegeben werden, wenn bei Urlaub kein Platz mehr dafür ist.")
 
     #asks which_urlaub_to_show(), then shows the 4 urlaub-widgets via the array urlaub_array
     def show_urlaub(self):

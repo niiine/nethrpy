@@ -241,7 +241,7 @@ class Ui_MainWindow(object):
         self.label_sonderzeit.setObjectName("label_sonderzeit")
         self.horizontalLayout_6.addWidget(self.label_sonderzeit)
         self.spin_sonderzeit = QtWidgets.QSpinBox(self.centralWidget)
-        self.spin_sonderzeit.setMaximum(999)
+        self.spin_sonderzeit.setMaximum(9999)
         self.spin_sonderzeit.setObjectName("spin_sonderzeit")
         self.horizontalLayout_6.addWidget(self.spin_sonderzeit)
         self.button_was_ist_sonderzeit = QtWidgets.QPushButton(self.centralWidget)
