@@ -114,7 +114,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 return i
         return None
 
-    #from 8 to 0 asks urlaub_array widget if its shown, if yes, return the last one (highes index)
+    #from 8 to 0 asks urlaub_array widget if its shown, if yes, return the last one (highest index)
     def which_urlaub_to_hide(self):
         global urlaub_array
         for i in reversed(range(8)):
