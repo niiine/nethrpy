@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import datetime
 import sys
 from qtpy import QtWidgets
 
@@ -22,45 +23,50 @@ class MainWindow(QtWidgets.QMainWindow):
         #init urlaub_array
         global urlaub_array
         urlaub_array = [
+        [self.ui.label_urlaub_von_1,
+        self.ui.label_urlaub_bis_1,
+        self.ui.date_urlaub_von_1,
+        self.ui.date_urlaub_bis_1],
+
         [self.ui.label_urlaub_von_2,
         self.ui.label_urlaub_bis_2,
-        self.ui.date_urlaub_bis_2,
-        self.ui.date_urlaub_von_2],
+        self.ui.date_urlaub_von_2,
+        self.ui.date_urlaub_bis_2],
 
         [self.ui.label_urlaub_von_3,
         self.ui.label_urlaub_bis_3,
-        self.ui.date_urlaub_bis_3,
-        self.ui.date_urlaub_von_3],
+        self.ui.date_urlaub_von_3,
+        self.ui.date_urlaub_bis_3],
 
         [self.ui.label_urlaub_von_4,
         self.ui.label_urlaub_bis_4,
-        self.ui.date_urlaub_bis_4,
-        self.ui.date_urlaub_von_4],
+        self.ui.date_urlaub_von_4,
+        self.ui.date_urlaub_bis_4],
 
         [self.ui.label_urlaub_von_5,
         self.ui.label_urlaub_bis_5,
-        self.ui.date_urlaub_bis_5,
-        self.ui.date_urlaub_von_5],
+        self.ui.date_urlaub_von_5,
+        self.ui.date_urlaub_bis_5],
 
         [self.ui.label_urlaub_von_6,
         self.ui.label_urlaub_bis_6,
-        self.ui.date_urlaub_bis_6,
-        self.ui.date_urlaub_von_6],
+        self.ui.date_urlaub_von_6,
+        self.ui.date_urlaub_bis_6],
 
         [self.ui.label_urlaub_von_7,
         self.ui.label_urlaub_bis_7,
-        self.ui.date_urlaub_bis_7,
-        self.ui.date_urlaub_von_7],
+        self.ui.date_urlaub_von_7,
+        self.ui.date_urlaub_bis_7],
 
         [self.ui.label_urlaub_von_8,
         self.ui.label_urlaub_bis_8,
-        self.ui.date_urlaub_bis_8,
-        self.ui.date_urlaub_von_8],
+        self.ui.date_urlaub_von_8,
+        self.ui.date_urlaub_bis_8],
 
         [self.ui.label_urlaub_von_9,
         self.ui.label_urlaub_bis_9,
-        self.ui.date_urlaub_bis_9,
-        self.ui.date_urlaub_von_9]
+        self.ui.date_urlaub_von_9,
+        self.ui.date_urlaub_bis_9]
         ]
 
         #hide labels urlaub 2-9
@@ -79,6 +85,9 @@ class MainWindow(QtWidgets.QMainWindow):
         #show urlaub and hide urlaub buttons functionality
         self.ui.button_urlaub_hinzufuegen.clicked.connect(self.show_urlaub)
         self.ui.button_urlaub_entfernen.clicked.connect(self.hide_urlaub)
+
+        #nettostunden berechnen button functionality
+        self.ui.button_nettostunden_berechnen.clicked.connect(self.calculate_nettohours)
 
 
     def set_help_text(self):
@@ -109,7 +118,7 @@ class MainWindow(QtWidgets.QMainWindow):
     #from 0 to 8 asks urlaub_array widget if its hidden, if yes, return the first one (lowest index)
     def which_urlaub_to_show(self):
         global urlaub_array
-        for i in range(8):
+        for i in range(9):
             if urlaub_array[i][0].isHidden():
                 return i
         return None
@@ -117,7 +126,7 @@ class MainWindow(QtWidgets.QMainWindow):
     #from 8 to 0 asks urlaub_array widget if its shown, if yes, return the last one (highest index)
     def which_urlaub_to_hide(self):
         global urlaub_array
-        for i in reversed(range(8)):
+        for i in reversed(range(9)):
             if urlaub_array[i][0].isHidden() == False:
                 return i
         return None
@@ -126,8 +135,46 @@ class MainWindow(QtWidgets.QMainWindow):
     def init_hide_urlaub(self):
         global urlaub_array
         for i in urlaub_array:
+            if i is urlaub_array[0]:
+                continue
             for e in i:
                 e.hide()
+
+    #starts nethr__init__
+    def calculate_nettohours(self):
+        self.nethr__init__()
+
+    #gets all values to calculate the netto hours
+    def nethr__init__(self):
+        global urlaub_array
+        urlaub_list = []
+        QDateEdit = type(self.ui.date_urlaub_von_1)
+        for i in urlaub_array:
+            for e in i:
+                obj_type = type(e)
+                if obj_type is QDateEdit and e.isVisible():
+                    urlaub_list.append(e.date().toPyDate())
+        offh = self.ui.spin_sonderzeit.value()
+        hperday_array = [self.ui.spin_montag.value(), self.ui.spin_dienstag.value(), self.ui.spin_mittwoch.value(), self.ui.spin_donnerstag.value(), self.ui.spin_freitag.value(), self.ui.spin_samstag.value(), self.ui.spin_sonntag.value()]
+        start = self.ui.date_zeitraum_von.date().toPyDate()
+        end = self.ui.date_zeitraum_bis.date().toPyDate()
+        self.calculate(start, end, hperday_array, urlaub_list, offh)
+
+
+    def calculate(self, start, end, hperday_array, urlaub_list, offh):
+        print(offh)
+        print(urlaub_list)
+        print(hperday_array)
+        print(end)
+        print(start.weekday())
+        nettoh = 0
+        currday = start
+        td = datetime.timedelta(days=1)
+        while currday <= end:
+            print(currday)
+            nettoh = nettoh + hperday_array[currday.weekday()]
+            currday = currday + td
+        print(nettoh)
 
 
 window = MainWindow()

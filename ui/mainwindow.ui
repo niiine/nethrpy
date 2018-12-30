@@ -517,6 +517,16 @@
   <tabstop>date_urlaub_bis_3</tabstop>
   <tabstop>date_urlaub_von_4</tabstop>
   <tabstop>date_urlaub_bis_4</tabstop>
+  <tabstop>date_urlaub_von_5</tabstop>
+  <tabstop>date_urlaub_bis_5</tabstop>
+  <tabstop>date_urlaub_von_6</tabstop>
+  <tabstop>date_urlaub_bis_6</tabstop>
+  <tabstop>date_urlaub_von_7</tabstop>
+  <tabstop>date_urlaub_bis_7</tabstop>
+  <tabstop>date_urlaub_von_8</tabstop>
+  <tabstop>date_urlaub_bis_8</tabstop>
+  <tabstop>date_urlaub_von_9</tabstop>
+  <tabstop>date_urlaub_bis_9</tabstop>
   <tabstop>button_urlaub_hinzufuegen</tabstop>
   <tabstop>button_urlaub_entfernen</tabstop>
   <tabstop>spin_sonderzeit</tabstop>
