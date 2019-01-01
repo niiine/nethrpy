@@ -2,6 +2,7 @@
 
 import datetime
 import sys
+import holidays
 from qtpy import QtWidgets
 
 from ui.mainwindow import Ui_MainWindow
@@ -158,23 +159,50 @@ class MainWindow(QtWidgets.QMainWindow):
         hperday_array = [self.ui.spin_montag.value(), self.ui.spin_dienstag.value(), self.ui.spin_mittwoch.value(), self.ui.spin_donnerstag.value(), self.ui.spin_freitag.value(), self.ui.spin_samstag.value(), self.ui.spin_sonntag.value()]
         start = self.ui.date_zeitraum_von.date().toPyDate()
         end = self.ui.date_zeitraum_bis.date().toPyDate()
-        self.calculate(start, end, hperday_array, urlaub_list, offh)
-
-
-    def calculate(self, start, end, hperday_array, urlaub_list, offh):
-        print(offh)
+        urlaub_list = self.crop_urlaub(start, end, urlaub_list)
+        ger_holidays = holidays.CountryHoliday('DE', prov='RP')
         print(urlaub_list)
-        print(hperday_array)
-        print(end)
-        print(start.weekday())
+
+        self.calculate(start, end, hperday_array, urlaub_list, offh, ger_holidays)
+
+    def crop_urlaub(self, start, end, urlaub_list):
+        i=0
+        while i+1 < len(urlaub_list):
+            if urlaub_list[i] > end or urlaub_list[i+1] < start:
+                del urlaub_list[i]
+                del urlaub_list[i]
+            else:
+                if urlaub_list[i] < start:
+                    urlaub_list[i] = start
+                if urlaub_list[i+1] > end:
+                    urlaub_list[i+1] = end
+            i=i+2
+        return urlaub_list
+
+
+
+    def calculate(self, start, end, hperday_array, urlaub_list, offh, ger_holidays):
         nettoh = 0
         currday = start
         td = datetime.timedelta(days=1)
         while currday <= end:
-            print(currday)
-            nettoh = nettoh + hperday_array[currday.weekday()]
+            if currday not in ger_holidays:
+                nettoh = nettoh + hperday_array[currday.weekday()]
+            else:
+                print(currday)
             currday = currday + td
         print(nettoh)
+
+    def calc_holidays(self, start, end, hperday_array, urlaub_list, offh, ger_holidays):
+       holiday_hours = 0
+       i=0
+       while i+1 < len(urlaub_list):
+           holiday_start = urlaub_list[i]
+           holiday_end = urlaub_list[i+1]
+           i=i+2
+
+
+
 
 
 window = MainWindow()
