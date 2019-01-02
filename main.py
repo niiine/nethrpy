@@ -92,13 +92,18 @@ class MainWindow(QtWidgets.QMainWindow):
 
 
     def set_help_text(self):
-        self.ui.text_dialog.setText("Kontakt via About-Button\nFeiertage sind nicht zu beachten, da sie automatisiert eingerechnet werden.\n(Momentan nur RLP Feiertage, Option für andere Bundesländer wird irgendwann hinzugefügt.")
+        self.ui.text_dialog.setText("{}\n{}\n{}\n".format("Kontakt via About-Button",
+                                                          "Feiertage sind nicht zu beachten, da sie automatisiert eingerechnet werden.",
+                                                          "Datumsangaben sind immer inklusiv. Wenn also der 01.01.2001 der letzte Tag ist, an dem man Urlaub hat, muss dieser eingetragen werden."))
 
     def set_about_text(self):
-        self.ui.text_dialog.setText("Kontaktemail: nine.github@gmail.com\nKontaktwebsite: https://github.com/strahlii\nSourcecode: https://github.com/strahlii/nethrpy")
+        self.ui.text_dialog.setText("{}\n{}\n{}\n".format("Kontaktemail: nine.github@gmail.com",
+                                                          "Kontaktwebsite: https://github.com/strahlii",
+                                                          "Sourcecode: https://github.com/strahlii/nethrpy"))
 
     def set_sonderzeit_text(self):
-        self.ui.text_dialog.setText("Sonderzeiten = alles, was von der Netto-Arbeitszeit abgezogen werden muss (Meeting etc)\nFalls nötig kann hier auch die Krankheitszeit in Stunden angegeben werden, wenn bei Urlaub kein Platz mehr dafür ist.")
+        self.ui.text_dialog.setText("{}\n{}\n".format("Sonderzeiten = alles, was von der Netto-Arbeitszeit abgezogen werden muss (Meeting etc).",
+                                                      "Falls nötig kann hier auch die Krankheitszeit in Stunden angegeben werden, wenn bei Urlaub kein Platz mehr dafür ist."))
 
     def set_nettoh_text(self, nettoh):
         self.ui.text_dialog.setText("{} {} {}".format("Ergebnis:", nettoh, "Stunden Netto"))
@@ -164,9 +169,45 @@ class MainWindow(QtWidgets.QMainWindow):
         start = self.ui.date_zeitraum_von.date().toPyDate()
         end = self.ui.date_zeitraum_bis.date().toPyDate()
         urlaub_list_every_date = self.get_every_urlaub(urlaub_list)
-        ger_holidays = holidays.CountryHoliday('DE', prov='RP')
+        ger_holidays = self.get_holidays_state()
 
         return self.calculate(start, end, hperday_array, urlaub_list_every_date, offh, ger_holidays)
+
+    def get_holidays_state(self):
+        state = self.ui.combo_box_state.currentText()
+        if state == "Baden-Wuerttemberg":
+            return holidays.CountryHoliday('DE', prov='BW')
+        elif state == "Bayern":
+            return holidays.CountryHoliday('DE', prov='BY')
+        elif state == "Berlin":
+            return holidays.CountryHoliday('DE', prov='BE')
+        elif state == "Brandenburg":
+            return holidays.CountryHoliday('DE', prov='BB')
+        elif state == "Bremen":
+            return holidays.CountryHoliday('DE', prov='HB')
+        elif state == "Hamburg":
+            return holidays.CountryHoliday('DE', prov='HH')
+        elif state == "Hessen":
+            return holidays.CountryHoliday('DE', prov='HE')
+        elif state == "Mecklenburg-Vorpommern":
+            return holidays.CountryHoliday('DE', prov='MV')
+        elif state == "Niedersachsen":
+            return holidays.CountryHoliday('DE', prov='NI')
+        elif state == "Nordrhein-Westfalen":
+            return holidays.CountryHoliday('DE', prov='NW')
+        elif state == "Rheinland-Pfalz":
+            return holidays.CountryHoliday('DE', prov='RP')
+        elif state == "Saarland":
+            return holidays.CountryHoliday('DE', prov='SL')
+        elif state == "Sachsen":
+            return holidays.CountryHoliday('DE', prov='SN')
+        elif state == "Sachsen-Anhalt":
+            return holidays.CountryHoliday('DE', prov='ST')
+        elif state == "Schleswig-Holstein":
+            return holidays.CountryHoliday('DE', prov='SH')
+        elif state == "Thueringen":
+            return holidays.CountryHoliday('DE', prov='TH')
+
 
 
     def get_every_urlaub(self, urlaub_list):
