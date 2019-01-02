@@ -100,6 +100,9 @@ class MainWindow(QtWidgets.QMainWindow):
     def set_sonderzeit_text(self):
         self.ui.text_dialog.setText("Sonderzeiten = alles, was von der Netto-Arbeitszeit abgezogen werden muss (Meeting etc)\nFalls nötig kann hier auch die Krankheitszeit in Stunden angegeben werden, wenn bei Urlaub kein Platz mehr dafür ist.")
 
+    def set_nettoh_text(self, nettoh):
+        self.ui.text_dialog.setText("{} {} {}".format("Ergebnis:", nettoh, "Stunden Netto"))
+
     #asks which_urlaub_to_show(), then shows the 4 urlaub-widgets via the array urlaub_array
     def show_urlaub(self):
         i = self.which_urlaub_to_show()
@@ -143,7 +146,8 @@ class MainWindow(QtWidgets.QMainWindow):
 
     #starts nethr__init__
     def calculate_nettohours(self):
-        self.nethr__init__()
+        nettoh = self.nethr__init__()
+        self.set_nettoh_text(nettoh)
 
     #gets all values to calculate the netto hours
     def nethr__init__(self):
@@ -159,12 +163,40 @@ class MainWindow(QtWidgets.QMainWindow):
         hperday_array = [self.ui.spin_montag.value(), self.ui.spin_dienstag.value(), self.ui.spin_mittwoch.value(), self.ui.spin_donnerstag.value(), self.ui.spin_freitag.value(), self.ui.spin_samstag.value(), self.ui.spin_sonntag.value()]
         start = self.ui.date_zeitraum_von.date().toPyDate()
         end = self.ui.date_zeitraum_bis.date().toPyDate()
-        urlaub_list = self.crop_urlaub(start, end, urlaub_list)
+        urlaub_list_every_date = self.get_every_urlaub(urlaub_list)
         ger_holidays = holidays.CountryHoliday('DE', prov='RP')
-        print(urlaub_list)
 
-        self.calculate(start, end, hperday_array, urlaub_list, offh, ger_holidays)
+        return self.calculate(start, end, hperday_array, urlaub_list_every_date, offh, ger_holidays)
 
+
+    def get_every_urlaub(self, urlaub_list):
+        urlaub_list_every_date = []
+        td = datetime.timedelta(days=1)
+        i=0
+        while i+1 < len(urlaub_list):
+            currday = urlaub_list[i]
+            end = urlaub_list[i+1]
+            while currday <= end:
+                urlaub_list_every_date.append(currday)
+                currday = currday + td
+            i = i + 2
+        return urlaub_list_every_date
+
+
+    def calculate(self, start, end, hperday_array, urlaub_list_every_date, offh, ger_holidays):
+        nettoh = 0
+        currday = start
+        td = datetime.timedelta(days=1)
+        while currday <= end:
+            if currday not in ger_holidays and currday not in urlaub_list_every_date:
+                nettoh = nettoh + hperday_array[currday.weekday()]
+            currday = currday + td
+        nettoh = nettoh - offh
+        return nettoh
+
+
+    ######discontinued######
+    #crops urlaub_list so that entries align with start/end of zeitraum if they started before zeitraum or ended after zeitraum. if they began after zeitraum ends or ended before zeitraum starts, they get deleted from the urlaub_list
     def crop_urlaub(self, start, end, urlaub_list):
         i=0
         while i+1 < len(urlaub_list):
@@ -177,31 +209,6 @@ class MainWindow(QtWidgets.QMainWindow):
                 if urlaub_list[i+1] > end:
                     urlaub_list[i+1] = end
             i=i+2
-        return urlaub_list
-
-
-
-    def calculate(self, start, end, hperday_array, urlaub_list, offh, ger_holidays):
-        nettoh = 0
-        currday = start
-        td = datetime.timedelta(days=1)
-        while currday <= end:
-            if currday not in ger_holidays:
-                nettoh = nettoh + hperday_array[currday.weekday()]
-            else:
-                print(currday)
-            currday = currday + td
-        print(nettoh)
-
-    def calc_holidays(self, start, end, hperday_array, urlaub_list, offh, ger_holidays):
-       holiday_hours = 0
-       i=0
-       while i+1 < len(urlaub_list):
-           holiday_start = urlaub_list[i]
-           holiday_end = urlaub_list[i+1]
-           i=i+2
-
-
 
 
 
